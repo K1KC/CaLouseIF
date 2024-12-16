@@ -1,11 +1,10 @@
 package controller;
 
+import connect.Connect;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import connect.Connect;
 import model.Item;
 
 public class WishlistController {
@@ -18,6 +17,7 @@ public class WishlistController {
 	
 	public boolean addWishlist(String item_id, String user_id) {
 		try {
+			// Untuk menambah sebuah item ke wishlist user
 			ResultSet res;
 			int lastWishlist_id = 0;
 			st = con.getConn().prepareStatement("SELECT wishlist_id FROM wishlists ORDER BY created_at DESC LIMIT 1");
@@ -48,6 +48,7 @@ public class WishlistController {
 	
 	public ArrayList<Item> viewWishlist(String user_id) {
 		try {
+			// Mengambil semua wishlist dengan user_id
 			st = con.getConn().prepareStatement("SELECT items.* "
 			         + "FROM wishlists "
 			         + "JOIN items ON wishlists.item_id = items.item_id "
@@ -76,6 +77,7 @@ public class WishlistController {
 	
 	public boolean removeWishlist(String item_id, String user_id) {
 		try {
+			// Hapus wishlist dari daftar user
 			st = con.getConn().prepareStatement("DELETE FROM wishlists WHERE item_id = ? AND user_id = ?");
 			st.setString(1, item_id);
 			st.setString(2, user_id);

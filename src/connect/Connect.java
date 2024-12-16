@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Connect {
+	// Data untuk database
 	private final String NAME = "calouseif";
 	private final String USER = "root";
 	private final String PASSWORD = "";

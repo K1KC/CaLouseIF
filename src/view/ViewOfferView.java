@@ -29,10 +29,12 @@ public class ViewOfferView {
 	
 	@SuppressWarnings("unchecked")
 	public Scene viewOffer(String user_id, String role) {
+		// Inisialisasi komponen UI yang diperlukan
 		VBox viewOfferContainer = new VBox();
 		Button backBtn = new Button("Back to home page");
 		Label offerLbl = new Label("All Offers");
 		
+		// Table untuk item
 		TableView<Item> itemTable = new TableView<>();
 		
 		TableColumn<Item, String> item_nameColumn = new TableColumn<>("Item Name");
@@ -52,33 +54,42 @@ public class ViewOfferView {
 		
 		TableColumn<Item, Void> actionColumn = new TableColumn<>("Action");
 		
+		// Kolom untuk action button
 		actionColumn.setCellFactory(col -> {
 			TableCell<Item, Void> actionCell = new TableCell<Item, Void>() {
 				Button acceptBtn = new Button("Accept Offer");
 				Button declineBtn = new Button("Decline Offer");
 				HBox buttonContainer = new HBox(acceptBtn, declineBtn);
 				{
+					// Handle saat accept button ditekan
 					acceptBtn.setOnMouseClicked(e -> {
+						// Ambil data item dari baris yang ditekan
 						Item item = getTableView().getItems().get(getIndex());
 						String itemId = item.getItem_id();
 						controller.acceptOffer(itemId);
 					});
 					
+					// Handle saat decline button ditekan
 					declineBtn.setOnMouseClicked(e -> {
+						// Pop up message saat gagal
 						Stage declineStage = new Stage(); 
 						
 						VBox declinePopUpContainer = new VBox();
 						declineStage.initModality(Modality.APPLICATION_MODAL);
 						declineStage.setTitle("Decline Reason");
 						
+						// Sebelum decline, seller harus memberikan alasan
 						Label declineReasonLbl = new Label("Enter reason to decline");
 						TextField declineReasonField = new TextField();
 						
 						Button confirmDeclineBtn = new Button("Confirm Decline");
 						
+						// Konfirmasi penolakan
 						confirmDeclineBtn.setOnMouseClicked(event -> {
 							Item item = getTableView().getItems().get(getIndex());
 							String itemId = item.getItem_id();
+
+							// Penolakan akan menghapus offer yang ada
 							controller.declineOffer(itemId);
 							declineStage.close();						
 						});						
@@ -106,6 +117,7 @@ public class ViewOfferView {
 			return actionCell;
 		});
 		
+		// handle back button
 		backBtn.setOnMouseClicked(e -> {
 			HomeView homeView = new HomeView(primaryStage);
 			primaryStage.setScene(homeView.home(user_id, role));
@@ -116,6 +128,7 @@ public class ViewOfferView {
 			return;
 		});
 		
+		// Populasi table dengan data item
 		itemTable.getItems().clear();
 		ObservableList<Item> allOfferItem = FXCollections.observableArrayList(controller.viewOfferItem());
 		itemTable.setItems(allOfferItem);

@@ -1,11 +1,10 @@
 package controller;
 
+import connect.Connect;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import connect.Connect;
 import model.Item;
 
 public class ItemController {
@@ -20,6 +19,7 @@ public class ItemController {
 	}
 	public void uploadItem(String item_name, String item_category, String item_size, String item_price) {
 			try {
+				// Mencari id tertinggi
 				int lastItem_id = 0;
 				st = con.getConn().prepareStatement("SELECT item_id FROM items ORDER BY created_at DESC LIMIT 1");
 				res = st.executeQuery();
@@ -27,6 +27,7 @@ public class ItemController {
 					lastItem_id = Integer.parseInt(res.getString("item_id"));
 				}
 				
+				// Id baru akan dibuat untuk item baru
 				String newItem_id = Integer.toString(lastItem_id + 1);
 				st = con.getConn().prepareStatement("INSERT INTO items (item_id, item_name, item_category, item_size, item_price, item_status, item_offer_status) VALUES (?, ?, ?, ?, ?, ?, ?)");
 				st.setString(1, newItem_id);
@@ -44,6 +45,7 @@ public class ItemController {
 		}	
 	
 	public String checkItemValidation(String item_name, String item_category, String item_size, String item_price) {
+		// Validasi data item
 		String messageLbl;
 		if(item_name.isBlank()) {
 			messageLbl = "Item name cannot be empty!";
@@ -91,6 +93,7 @@ public class ItemController {
 	
 	public ArrayList<Item> viewItems() {
 		try {
+			// Ambil semua item yang ada, khusus approved untuk ditampilkan
 			st = con.getConn().prepareStatement("SELECT * FROM items WHERE item_status = 'approved' AND item_status != 'sold'");
 			res = st.executeQuery();
 			ArrayList<Item> allItemList = new ArrayList<>();
@@ -116,6 +119,7 @@ public class ItemController {
 	
 	public ArrayList<Item> adminViewItems() {
 		try {
+			// Ambil semua items untuk tampilan admin
 			st = con.getConn().prepareStatement("SELECT * FROM items");
 			res = st.executeQuery();
 			ArrayList<Item> allItemList = new ArrayList<>();
@@ -141,6 +145,7 @@ public class ItemController {
 	
 	public ArrayList<Item> viewRequestedItems() {
 		try {
+			// Ambil semua items yang sedang ditunggu untuk di approve
 			st = con.getConn().prepareStatement("SELECT * FROM items WHERE item_status = 'pending'");
 			res = st.executeQuery();
 			ArrayList<Item> allRequestedItemList = new ArrayList<>();
@@ -165,6 +170,7 @@ public class ItemController {
 	
 	public void approveItem(String item_id) {
 		try {
+			// Logic untuk meng approve item dengan mengubah status menjadi approved
 			st = con.getConn().prepareStatement("UPDATE items SET item_status = 'approved' WHERE item_id = ?");
 			st.setString(1, item_id);
 			st.executeUpdate();
@@ -176,6 +182,7 @@ public class ItemController {
 	
 	public void declineItem(String item_id) {
 		try {
+			// Logic untuk menghapus item langsung
 			st = con.getConn().prepareStatement("DELETE FROM items WHERE item_id = ?");
 			st.setString(1, item_id);
 			st.executeUpdate();
@@ -187,6 +194,7 @@ public class ItemController {
 	
 	public ArrayList<Item> getItemForEdit(String item_id) {
 		try {
+			// Ambil item dari item_id
 			st = con.getConn().prepareStatement("SELECT * FROM items WHERE item_id = ?");
 			st.setString(1, item_id);
 			res = st.executeQuery();
@@ -211,6 +219,7 @@ public class ItemController {
 	
 	public boolean editItem(String item_id, String item_name, String item_category, String item_size, String item_price) {
 		try {
+			// ubah info item
 			st = con.getConn().prepareStatement("UPDATE items SET item_name = ?, item_category = ?, item_size = ?, item_price = ? WHERE item_id = ?");
 			st.setString(1, item_name);
 			st.setString(2, item_category);
@@ -228,6 +237,7 @@ public class ItemController {
 	
 	public boolean deleteItem(String item_id) {
 		try {
+			// Logic untuk hapus item
 			st = con.getConn().prepareStatement("DELETE FROM items WHERE item_id = ?");
 			st.setString(1, item_id);
 			st.executeUpdate();
@@ -241,6 +251,7 @@ public class ItemController {
 	
 	public ArrayList<Item> browseItem(String item_name){
 		try {
+			// Logic untuk mencari item dari nama
 			st = con.getConn().prepareStatement("SELECT * FROM items WHERE item_name = ?");
 			st.setString(1, item_name);
 			res = st.executeQuery();
@@ -265,6 +276,7 @@ public class ItemController {
 	
 	public String offerPrice(String item_id, String offer_price, String user_id) {
 		try {
+			// Logic untuk mengajukan tawaran harga ke seller
 			st = con.getConn().prepareStatement("SELECT item_price, item_offer_status FROM items WHERE item_id = ?");
 			st.setString(1, item_id);
 			res = st.executeQuery();
@@ -306,6 +318,7 @@ public class ItemController {
 	
 	public ArrayList<Item> viewOfferItem() {
 		try {
+			// Mengambil semua item yang sedang ditawar
 			st = con.getConn().prepareStatement("SELECT * FROM items WHERE item_offer_status != 'none'");
 			res = st.executeQuery();
 			ArrayList<Item> offeredItem = new ArrayList<>();
@@ -329,6 +342,7 @@ public class ItemController {
 	}
 	
 	public void acceptOffer(String item_id) {
+		// Logic untuk menerima harga tawaran
 		String offerStatus = null;
 		try {
 			st = con.getConn().prepareStatement("SELECT item_offer_status FROM items WHERE item_id = ?");
@@ -348,6 +362,7 @@ public class ItemController {
 		String username = offerStatusSliced[1].trim();
 		
 		try {
+			// Tawaran diterima berarti status offer sudah tidak ada
 			st = con.getConn().prepareStatement("UPDATE items SET item_price = ?, item_offer_status = 'none' WHERE item_id = ?");
 			st.setString(1, offer_price);
 			st.setString(2, item_id);
@@ -359,6 +374,7 @@ public class ItemController {
 		
 		String user_id = null;
 		try {
+			// Mencari user yang diterima tawarannya untuk langsung di purchase
 			st = con.getConn().prepareStatement("SELECT user_id FROM users WHERE username = ?");
 			st.setString(1, username);
 			res = st.executeQuery();
@@ -376,6 +392,7 @@ public class ItemController {
 	
 	public void declineOffer(String item_id) {
 		try {
+			// Logic untuk menolak tawaran
 			st = con.getConn().prepareStatement("UPDATE items SET item_offer_status = 'none' WHERE item_id = ?");
 			st.setString(1, item_id);
 			st.executeUpdate();

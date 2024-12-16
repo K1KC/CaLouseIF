@@ -1,11 +1,10 @@
 package controller;
 
+import connect.Connect;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import connect.Connect;
 import model.Item;
 
 public class TransactionController {
@@ -18,6 +17,7 @@ public class TransactionController {
 	
 	public boolean purchaseItem(String item_id, String user_id) {
 		try {
+			// Logic untuk membuat transaction baru setelah adanya purchase
 			int lastTransaction_id = 0;
 			st = con.getConn().prepareStatement("SELECT transaction_id FROM transactions ORDER BY created_at DESC LIMIT 1" );
 			ResultSet res = st.executeQuery();
@@ -50,6 +50,7 @@ public class TransactionController {
 	
 	public ArrayList<Item> viewHistory(String user_id) {
 		try {
+			// Tampilkan riwayat transaksi
 			st = con.getConn().prepareStatement("SELECT items.* " +
                     "FROM items " +
                     "JOIN transactions ON items.item_id = transactions.item_id " +

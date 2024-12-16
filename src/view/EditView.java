@@ -24,6 +24,7 @@ public class EditView {
 	}
 
 	public Scene edit(String item_id, String user_id, String role) {
+		// Inisialisasi komponen UI yang diperlukan
 		VBox editContainer = new VBox();
 		Button backBtn = new Button("Back to home");
 		
@@ -45,8 +46,10 @@ public class EditView {
 		
 		Button editItemBtn = new Button("Confirm Edit");
 
-		
+		// Data item yang akan diedit
 		ArrayList<Item> currentItemForEdit = controller.getItemForEdit(item_id);
+
+		// Ambil data item lalu masukkan prompt ke setiap field terkait
 		for(Item item : currentItemForEdit) {
 			itemNameField.setPromptText(item.getItem_name());
 			itemCategoryField.setPromptText(item.getItem_category());
@@ -54,12 +57,14 @@ public class EditView {
 			itemPriceField.setPromptText(item.getItem_price());
 		}
 		
+		// Ambil input dan memroses edit informasi item
 		editItemBtn.setOnMouseClicked(e -> {
 			String newItem_name = itemNameField.getText();
 			String newItem_category = itemCategoryField.getText();
 			String newItem_size = itemSizeField.getText();
 			String newItem_price = itemPriceField.getText();
 			
+			// Proses edit item jika berhasil
 			if(controller.editItem(item_id, newItem_name, newItem_category, newItem_size, newItem_price)) {
 				Alert successAlert = new Alert(AlertType.INFORMATION);
 				successAlert.setContentText("Edit item successful!");
@@ -72,6 +77,7 @@ public class EditView {
 				backBtn.setOnMouseClicked(null);
 				return;
 			} else {
+				// Jika proses edit gagal
 				Alert failedAlert = new Alert(AlertType.WARNING);
 				failedAlert.setContentText("Edit item failed! Please try again!");
 				failedAlert.showAndWait();

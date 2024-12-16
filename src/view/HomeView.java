@@ -55,6 +55,7 @@ public class HomeView {
 		
 		browseContainer.getChildren().addAll(browseLbl, browseTextField, browseBtn);
 		
+		// Siapkan tabel untuk item
 		TableView<Item> itemTable = new TableView<>();
 		
 		TableColumn<Item, String> item_nameColumn = new TableColumn<>("Item Name");
@@ -76,7 +77,9 @@ public class HomeView {
 		
 		ObservableList<Item> allItem;
 		
+		// Tergantung role, home akan menampilkan berbeda
 		if(role.equals("Buyer")) {
+			// Populasikan list dengan semua item yang sudah diapprove
 			allItem = FXCollections.observableArrayList(controller.viewItems());
 			itemTable.setItems(allItem);
 			Button wishlistBtn = new Button("Wishlist");
@@ -84,6 +87,7 @@ public class HomeView {
 			
 			homeViewContainer.getChildren().addAll(wishlistBtn, transactionHistoryBtn, allItemsLbl, browseContainer);
 			
+			// Untuk kolom action
 			actionColumn.setCellFactory(col -> {
 				TableCell<Item, Void> actionCell = new TableCell<Item, Void>() {
 					Button purchaseBtn = new Button("Purchase");
@@ -91,6 +95,7 @@ public class HomeView {
 					Button addWishlistBtn = new Button("Add to Wishlist");
 					HBox buttonContainer = new HBox(purchaseBtn, offerBtn, addWishlistBtn);
 					{
+						// Untuk handle purchase, kemudian akan menampilkan pop up konfirmasi jika berhasil
 						purchaseBtn.setOnMouseClicked(e -> {
 							Alert confirmAlert = new Alert(AlertType.CONFIRMATION);
 							confirmAlert.setTitle("Purchase Confirmation");
@@ -115,6 +120,7 @@ public class HomeView {
 						
 						});
 						
+						// User akan diberi pop up untuk mengisi harga tawaran
 						offerBtn.setOnMouseClicked(e -> {
 							Stage makeOfferStage = new Stage(); 
 							
@@ -153,6 +159,7 @@ public class HomeView {
 							makeOfferStage.showAndWait();
 						});
 						
+						// Tombol untuk mengambil item di baris tersebut lalu masuk ke wishlist
 						addWishlistBtn.setOnMouseClicked(e -> {
 							Item item = getTableView().getItems().get(getIndex());
 							String item_id = item.getItem_id();
@@ -182,6 +189,7 @@ public class HomeView {
 				return actionCell;
 			});
 
+			// Buyer pergi ke halaman wishlist
 			wishlistBtn.setOnMouseClicked(e -> {
 				WishlistView wishlistView = new WishlistView(primaryStage);
 				primaryStage.setScene(wishlistView.wishlist(user_id, role));
@@ -192,6 +200,7 @@ public class HomeView {
 				return;
 			});
 			
+			// Buyer untuk pergi halaman riwayat transaksi
 			transactionHistoryBtn.setOnMouseClicked(e -> {
 				TransactionHistoryView transactionHistoryView = new TransactionHistoryView(primaryStage);
 				primaryStage.setScene(transactionHistoryView.transactionHistory(user_id, role));
@@ -205,21 +214,25 @@ public class HomeView {
 			itemTable.getColumns().addAll(item_nameColumn, item_categoryColumn, item_sizeColumn, item_priceColumn, item_offer_statusColumn, actionColumn);
 			
 		} else {
+			// Home untuk seller. Tabel ada kolom status
 			TableColumn<Item, String> item_statusColumn = new TableColumn<>("Item Status");
 			item_statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItem_status()));
 			
+			// Item dimasukkan ke list untuk ke tabel
 			allItem = FXCollections.observableArrayList(controller.adminViewItems());
 			itemTable.setItems(allItem);
 			Button viewOfferBtn = new Button("View Price Offers");
 			Button uploadItemBtn = new Button("Upload New Item");
 			homeViewContainer.getChildren().addAll(viewOfferBtn, uploadItemBtn, allItemsLbl, browseContainer);
 			
+			// Kolom action
 			actionColumn.setCellFactory(col -> {
 				TableCell<Item, Void> actionCell = new TableCell<Item, Void>() {
 					Button editBtn = new Button("Edit");
 					Button deleteBtn = new Button("Delete");
 					HBox buttonContainer = new HBox(editBtn, deleteBtn);
 					{
+						// handle jika selelr ingin edit item
 						editBtn.setOnMouseClicked(e -> {
 							Item item = getTableView().getItems().get(getIndex());
 							String item_id = item.getItem_id();
@@ -232,6 +245,7 @@ public class HomeView {
 							return;
 						});
 						
+						// handle jika seller ingin menghapus item
 						deleteBtn.setOnMouseClicked(e -> {
 							Item item = getTableView().getItems().get(getIndex());
 							String item_id = item.getItem_id();
@@ -261,6 +275,7 @@ public class HomeView {
 				return actionCell;
 			});	
 			
+			// seller dibawa ke halaman berisi semua tawaran yang menunggu
 			viewOfferBtn.setOnMouseClicked(e -> {
 				ViewOfferView viewOfferView = new ViewOfferView(primaryStage);
 				primaryStage.setScene(viewOfferView.viewOffer(user_id, role));
@@ -271,6 +286,7 @@ public class HomeView {
 				return;
 			});
 			
+			// Seller akan dibawa ke halaman upload item
 			uploadItemBtn.setOnMouseClicked(e -> {
 				UploadItemView uploadItemView = new UploadItemView(primaryStage);
 				primaryStage.setScene(uploadItemView.UploadItem(user_id, role));
@@ -283,6 +299,7 @@ public class HomeView {
 			itemTable.getColumns().addAll(item_nameColumn, item_categoryColumn, item_sizeColumn, item_priceColumn, item_statusColumn, item_offer_statusColumn, actionColumn);
 		}
 		
+		// Handle back button ke login
 		backBtn.setOnMouseClicked(e -> {
 			LoginView loginView = new LoginView(primaryStage);
 			primaryStage.setScene(loginView.Login());
@@ -293,6 +310,7 @@ public class HomeView {
 			return;
 		});
 		
+		// Fitur search dengan nama
 		browseBtn.setOnMouseClicked(e -> {
 			String item_name = browseTextField.getText();
 			if(!item_name.isBlank()) {

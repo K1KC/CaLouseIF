@@ -78,6 +78,7 @@ public class LoginView {
 				return;
 			}
 			
+			// Untuk menampung user_id dan role dari user saat ini 
 			String user_id = currentUser.get(0);
 			String role = currentUser.get(1);
 			

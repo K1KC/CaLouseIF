@@ -36,6 +36,7 @@ public class WishlistView {
 	
 	@SuppressWarnings("unchecked")
 	public Scene wishlist(String user_id, String role) {
+		// Inisialisasi komponen UI yang diperlukan
 		VBox wishlistContainer = new VBox();
 		
 		Button backBtn = new Button("Back to home page");

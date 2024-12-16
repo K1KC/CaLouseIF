@@ -14,10 +14,12 @@ import javafx.stage.Stage;
 import model.Item;
 
 public class TransactionHistoryView {
+	// global variable
 	TransactionController controller;
 	private Stage primaryStage;
 	private Scene transactionHistoryScene;
 	
+	// constructor
 	public TransactionHistoryView(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		this.controller = new TransactionController();
@@ -25,10 +27,14 @@ public class TransactionHistoryView {
 
 	@SuppressWarnings("unchecked")
 	public Scene transactionHistory(String user_id, String role) {
+
+		// Inisialisasi komponen UI yang diperlukan
 		VBox transactionHistoryContainer = new VBox();
 		
 		Button backBtn = new Button("Back to home page");
 		Label transactionHistoryLbl = new Label("Transaction History");
+
+		// Tabel untuk menampilkan item
 		TableView<Item> itemTable = new TableView<>();
 		
 		TableColumn<Item, String> item_nameColumn = new TableColumn<>("Item Name");
@@ -44,7 +50,7 @@ public class TransactionHistoryView {
 		item_priceColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItem_price()));
 		
 
-		
+		// handle back button
 		backBtn.setOnMouseClicked(e -> {
 			HomeView homeView = new HomeView(primaryStage);
 			primaryStage.setScene(homeView.home(user_id, role));
@@ -55,10 +61,12 @@ public class TransactionHistoryView {
 			return;			
 		});
 		
+		// Masukkan data item ke observable list untuk dimasukkan ke table
 		ObservableList<Item> transactionHistory = FXCollections.observableArrayList(controller.viewHistory(user_id));
 		itemTable.setItems(transactionHistory);	
 		itemTable.getColumns().addAll(item_nameColumn, item_categoryColumn, item_sizeColumn, item_priceColumn);	
 		
+		// Masukkan komponen UI ke container
 		transactionHistoryContainer.getChildren().addAll(backBtn, transactionHistoryLbl, itemTable);
 		transactionHistoryScene = new Scene(transactionHistoryContainer, 750, 500);
 		return transactionHistoryScene;

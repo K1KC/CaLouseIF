@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class UploadItemView {
+
 	ItemController controller;
 	private Stage primaryStage;
 	private Scene uploadItemScene;
@@ -21,6 +22,7 @@ public class UploadItemView {
 	}
 	
 	public Scene UploadItem(String user_id, String role) {
+		// Inisialisasi komponen UI yang diperlukan
 		VBox uploadItemContainer = new VBox();
 		Button backBtn = new Button("Back to home");
 		
@@ -45,16 +47,20 @@ public class UploadItemView {
 		Label messageLbl = new Label("");
 		
 		Button uploadItemBtn = new Button("Upload Item");
+
+		// Alert pop up jika sukses upload item
 		Alert successAlert = new Alert(AlertType.INFORMATION);
 		successAlert.setContentText("Upload item successful!"
 				+ "Awaiting admin approval");
 		
+		// Handle jika button upload item ditekan
 		uploadItemBtn.setOnMouseClicked(e -> {
 			String item_name = itemNameField.getText();
 			String item_category = itemCategoryField.getText();
 			String item_size = itemSizeField.getText();
 			String item_price = itemPriceField.getText();
 			
+			// Ambil data item lalu validasi
 			String itemValidation = controller.checkItemValidation(item_name, item_category, item_size, item_price);
 			if(!itemValidation.equals("Item Valid")) {
 				messageLbl.setText(itemValidation);
@@ -65,6 +71,7 @@ public class UploadItemView {
 			}
 		});
 		
+		// Handle back button
 		backBtn.setOnMouseClicked(e -> {
 			HomeView homeView = new HomeView(primaryStage);
 			primaryStage.setScene(homeView.home(user_id, role));
@@ -75,6 +82,7 @@ public class UploadItemView {
 			return;
 		});
 		
+		// Masukkan komponen UI ke container
 		uploadItemContainer.getChildren().addAll(backBtn, itemNameLbl, itemNameField, itemCategoryLbl, itemCategoryField, itemSizeLbl, itemSizeField, itemPriceLbl, itemPriceField, messageLbl, uploadItemBtn);
 		uploadItemScene = new Scene(uploadItemContainer, 750, 500);
 		return uploadItemScene; 

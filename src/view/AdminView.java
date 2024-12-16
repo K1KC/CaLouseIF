@@ -27,6 +27,7 @@ public class AdminView {
 	
 	@SuppressWarnings("unchecked")
 	public Scene AdminItemView() {
+		// Inisialisasi komponen UI yang diperlukan
 		VBox adminContainer = new VBox();
 		Button backBtn = new Button("Back to login page");
 		Button GoToRequestListViewBtn = new Button("Go to request item list page");
@@ -56,12 +57,14 @@ public class AdminView {
 		TableColumn<Item, String> item_offer_statusColumn = new TableColumn<>("Item Offer Status");
 		item_offer_statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItem_offer_status()));
 
-		
+		// Informasi item masuk ke list
 		ObservableList<Item> allItem = FXCollections.observableArrayList(controller.adminViewItems());
 		
+		// Populasi tabel dengan item di list
 		itemTable.setItems(allItem);
 		itemTable.getColumns().addAll(item_idColumn, item_nameColumn, item_categoryColumn, item_sizeColumn, item_priceColumn, item_statusColumn, item_offer_statusColumn);
 		
+		// handle back button
 		backBtn.setOnMouseClicked(e -> {
 			LoginView loginView = new LoginView(primaryStage);
 			primaryStage.setScene(loginView.Login());
@@ -72,6 +75,7 @@ public class AdminView {
 			return;
 		});
 		
+		// Handle untuk pergi halaman request list
 		GoToRequestListViewBtn.setOnMouseClicked(e -> {
 			RequestListView requestListView = new RequestListView(primaryStage);
 			primaryStage.setScene(requestListView.RequestList());

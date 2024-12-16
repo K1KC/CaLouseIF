@@ -1,11 +1,10 @@
 package controller;
 
+import connect.Connect;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import connect.Connect;
 
 public class UserController {
 	private Connect con;
@@ -18,6 +17,7 @@ public class UserController {
 	
 	public ArrayList<String> register(String username, String password, String phone_number, String address, String role) {
 		try {
+			// Logic untuk membuat akun baru
 			int lastUser_id = 0;
 			st = con.getConn().prepareStatement("SELECT user_id FROM users ORDER BY created_at DESC LIMIT 1 ");
 			res = st.executeQuery();
@@ -45,6 +45,7 @@ public class UserController {
 	}
 	
 	public String CheckAccountValidation(String username, String password, String conf_password, String phone_number, String address, String role) {
+		// Validasi input user
 		String messageLbl;
 		if(username.isBlank()) {
 			messageLbl = "Username cannot empty!";
@@ -112,6 +113,7 @@ public class UserController {
 	
 	public boolean isUsernameExist(String username) {
 		try {
+			// Validasi apakah username sudah ada karena username harus unique
 			st = con.getConn().prepareStatement("SELECT * FROM users WHERE username = ? LIMIT 1");
 			st.setString(1, username);
 			
@@ -128,6 +130,7 @@ public class UserController {
 	
 	public ArrayList<String> login(String username, String password) {
 		try {
+			// Logic untuk masuk dengan username dan password
 			st = con.getConn().prepareStatement("SELECT * FROM users WHERE username = ? AND password = ? LIMIT 1");
 			st.setString(1, username);
 			st.setString(2, password);

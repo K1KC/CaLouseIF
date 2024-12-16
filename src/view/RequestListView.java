@@ -18,10 +18,12 @@ import javafx.stage.Stage;
 import model.Item;
 
 public class RequestListView {
+	// Global variabel
 	ItemController controller;
 	private Stage primaryStage;
 	private Scene requestListViewScene;
 
+	// Constructor
 	public RequestListView(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		this.controller = new ItemController();
@@ -29,11 +31,12 @@ public class RequestListView {
 	
 	@SuppressWarnings("unchecked")
 	public Scene RequestList() {
+		// Inisialisasi komponen UI yang diperlukan
 		VBox requestListContainer = new VBox();
 		Button backBtn = new Button("Back to all items page");
 		Label requestedLbl = new Label("All Requested Items");
 		
-		 
+		// Table untuk menampilkan item
 		TableView<Item> itemTable = new TableView<>();
 		
 		TableColumn<Item, String> item_idColumn = new TableColumn<>("Item ID");
@@ -59,6 +62,7 @@ public class RequestListView {
 		
 		TableColumn<Item, Void> actionColumn = new TableColumn<>("Action");
 		
+		// Kolom untuk button action
 		actionColumn.setCellFactory(col -> {
 			TableCell<Item, Void> actionCell = new TableCell<Item, Void>() {
 				
@@ -111,6 +115,7 @@ public class RequestListView {
 					});
 				}
 				
+				// Menampilkan button
 			    @Override
 			    protected void updateItem(Void item, boolean empty) {
 			        super.updateItem(item, empty);
@@ -125,12 +130,14 @@ public class RequestListView {
 			return actionCell;
 		});
 		
+		// Masukkan item ke sebuah observable list untuk dimasukkan ke table
 		ObservableList<Item> allRequestedItem = FXCollections.observableArrayList(controller.viewRequestedItems());
 		
+		// Masukkan kolom ke tabel
 		itemTable.setItems(allRequestedItem);
 		itemTable.getColumns().addAll(item_idColumn, item_nameColumn, item_categoryColumn, item_sizeColumn, item_priceColumn, item_statusColumn, item_offer_statusColumn, actionColumn);
 		
-		
+		// handle back button
 		backBtn.setOnMouseClicked(e -> {
 			AdminView adminView = new AdminView(primaryStage);
 			primaryStage.setScene(adminView.AdminItemView());
@@ -141,12 +148,14 @@ public class RequestListView {
 			return;
 		});
 		
+		// Masukkan komponen UI ke container
 		requestListContainer.getChildren().addAll(backBtn , requestedLbl, itemTable);
 		requestListViewScene = new Scene(requestListContainer, 750, 500);
 		
 		return requestListViewScene;
 	}
 	
+	// membersihkan stage
 	public void cleanup() {
 		requestListViewScene = null;
 		controller = null;
